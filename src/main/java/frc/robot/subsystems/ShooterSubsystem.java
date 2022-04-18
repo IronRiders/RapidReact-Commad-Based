@@ -14,7 +14,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private VisionSubsystem m_vision;
     
-    public ShooterSubsystem() {
+    public ShooterSubsystem(VisionSubsystem vision) {
         bottomMotor = new CANSparkMax(Constants.SHOOTER_PORT_BOTTOM, MotorType.kBrushless);
         topMotor = new CANSparkMax(Constants.SHOOTER_PORT_TOP, MotorType.kBrushless);
         bottomMotor.setIdleMode(IdleMode.kCoast);
@@ -32,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
         topPID.setI(Constants.SHOOTER_I);
         topPID.setD(Constants.SHOOTER_D);
 
-        m_vision = new VisionSubsystem();
+         m_vision = vision;
     }
 
     public void shoot(double rpm) {
