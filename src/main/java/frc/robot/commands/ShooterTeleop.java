@@ -13,15 +13,15 @@ public class ShooterTeleop extends CommandBase {
     private IndexerSubsystem m_indexer;
     private DriveSubsystem m_drive;
 
-    public ShooterTeleop() {
+    public ShooterTeleop(VisionSubsystem vision, ShooterSubsystem shooter, IndexerSubsystem indexer, DriveSubsystem drive) {
+        m_vision = vision;
+        m_shooter = shooter;
+        m_indexer = indexer;
+        m_drive = drive;
         addRequirements(m_vision);
         addRequirements(m_shooter);
         addRequirements(m_drive);
         addRequirements(m_indexer);
-        m_vision = new VisionSubsystem();
-        m_shooter = new ShooterSubsystem();
-        m_indexer = new IndexerSubsystem();
-        m_drive = new DriveSubsystem();
     }
 
     @Override
