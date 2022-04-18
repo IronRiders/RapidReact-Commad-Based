@@ -6,107 +6,61 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.commands.ShooterTeleop;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakeSubSystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
- 
-  // Intiating All the subsystems
-  public final VisionSubsystem m_vision = new VisionSubsystem();
-  public final ShooterSubsystem m_shooter = new ShooterSubsystem(m_vision);
-  public final DriveSubsystem m_drive = new DriveSubsystem(m_vision);
-  public final IndexerSubsystem m_indexer = new IndexerSubsystem();
-  public final IntakeSubSystem m_intake = new IntakeSubSystem();
-  public final ClimberSubsystem m_climber = new ClimberSubsystem();
+    public final VisionSubsystem vision = new VisionSubsystem();
+    public final ShooterSubsystem shooter = new ShooterSubsystem();
+    public final DriveSubsystem drive = new DriveSubsystem();
+    public final IndexerSubsystem indexer = new IndexerSubsystem();
+    public final IntakeSubSystem intake = new IntakeSubSystem();
+    public final ClimberSubsystem climber = new ClimberSubsystem();
 
-  public static GenericHID m_controller = new GenericHID(0);
+    public static GenericHID controller = new GenericHID(0);
 
-  public RobotContainer() {    
-    configureButtonBindings();
-    
-  }
+    public RobotContainer() {
+        // Drive
+        drive.setDefaultCommand(new RunCommand(
+                () -> drive.updateSpeed(controller.getRawAxis(0), controller.getRawAxis(1),
+                        controller.getRawAxis(2),
+                        true)));
+        // Invert Drive
+        new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
+        // Intake
+        new JoystickButton(controller, 2)
+            .whenPressed(new InstantCommand(intake::intakeBall, intake))
+            .whenReleased(new InstantCommand(intake::stop, intake));
+        new JoystickButton(controller, 11)
+            .whenHeld(new InstantCommand(intake::spitOutBall, intake))
+            .whenReleased(new InstantCommand(intake::stop, intake));
+        // Intake Deployment
+        new JoystickButton(controller, 9).whenPressed(new InstantCommand(intake::startDeployment, intake));
+        new JoystickButton(controller, 10).whenPressed(new InstantCommand(intake::finishDeployment, intake));
+        // Climber
+        new JoystickButton(controller, 12)
+            .whenHeld(new InstantCommand(climber::raise, climber))
+            .whenReleased(new InstantCommand(climber::stop, climber));
+        // Lower Climber
+        new JoystickButton(controller, 4)
+            .whenHeld(new InstantCommand(climber::lower, climber))
+            .whenReleased(new InstantCommand(climber::stop, climber));
+        // Shoot
+        new JoystickButton(controller, 1)
+            .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
+    }
 
-  // Just realized that we could probably use While held instead. Too lazy to change it.
-
-  private void configureButtonBindings() {
-
-    //Drive
-
-    // Invert Drive
-    new JoystickButton(m_controller, 3)
-                      .whenPressed(new RunCommand(m_drive::invertDrive, m_drive));
-
-    // Turns on Intake if held.
-    new JoystickButton(m_controller, 2)
-                      .whenHeld(new RunCommand(m_intake::intakeBall, m_intake))
-                              .whenReleased(m_intake::stop, m_intake);
-    
-    // Reverse Intake if held
-    new JoystickButton(m_controller, 11)
-                      .whenHeld(new RunCommand(m_intake::spitOutBall, m_intake))
-                              .whenReleased(m_intake::stop, m_intake);
-
-     //Start Intake Deployment
-    new JoystickButton(m_controller, 9)
-                      .whenPressed(new RunCommand(m_intake::startDeployment, m_intake)); 
-
-    //End Intake Deployment
-    new JoystickButton(m_controller, 10)
-                      .whenPressed(new RunCommand(m_intake::finishDeployment, m_intake)); 
-
-    // Raising Climber
-    new JoystickButton(m_controller, 12) 
-                      .whenHeld(new RunCommand(m_climber::raise, m_climber))
-                              .whenReleased(m_climber::stop, m_climber);
-
-    // Lower Climber
-    new JoystickButton(m_controller, 4)
-                      .whenHeld(new RunCommand(m_climber::lower, m_climber))
-                              .whenReleased(m_climber::stop, m_climber);
-
-    // Shoot
-    new JoystickButton(m_controller, 1)
-                    .whenHeld(new ShooterTeleop(m_shooter, m_indexer, m_drive));
-     // new JoystickButton(m_controller, 1)
-                  //.whenHeld(
-                   // new RunCommand(m_drive::updateSpeedAuto, m_drive)
-                   // .alongWith(new RunCommand(m_shooter::shootAuto, m_shooter))
-                   // .withTimeout(1.5)
-                   // .andThen(m_drive::stop, m_drive)
-                   // .andThen(m_indexer::extend, m_indexer)
-                  //  .andThen(new WaitCommand(1))
-                  //.andThen(m_shooter::stop, m_shooter)
-                 // .andThen(m_indexer::retract, m_indexer)
-                 // );
-  }
-
-  public void teleopDrive() {
-    m_drive.setDefaultCommand(new RunCommand(
-      () -> m_drive.updateSpeed(m_controller.getRawAxis(0), m_controller.getRawAxis(1), m_controller.getRawAxis(2), true)
-    ));
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return null;
-  }
-
+    public Command getAutonomousCommand() {
+        return null;
+    }
 }

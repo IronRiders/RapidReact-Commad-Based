@@ -1,43 +1,25 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.subsystems.*;
+import frc.robot.Constants;
 
-public class ShooterTeleop extends CommandBase {
-    private ShooterSubsystem m_shooter;
-    private IndexerSubsystem m_indexer;
-    private DriveSubsystem m_drive;
-
-    public ShooterTeleop(ShooterSubsystem shooter, IndexerSubsystem indexer, DriveSubsystem drive) {
-        m_shooter = shooter;
-        m_indexer = indexer;
-        m_drive = drive;
-        addRequirements(m_shooter);
-        addRequirements(m_drive);
-        addRequirements(m_indexer);
-    }
-
-    @Override
-    public void initialize() {
-        m_indexer.retract();
-    }
-
-    @Override
-    public void execute() {
-            new RunCommand(m_drive::updateSpeedAuto, m_drive)
-            .alongWith(new RunCommand(m_shooter::shootAuto, m_shooter))
-            .withTimeout(1.5)
-            .andThen(m_drive::stop, m_drive)
-            .andThen(m_indexer::extend, m_indexer)
-            .andThen(new WaitCommand(1));
-    }
-
-    public void end() {
-        m_shooter.stop();
-        m_indexer.retract();
+public class ShooterTeleop extends SequentialCommandGroup {
+    public ShooterTeleop(ShooterSubsystem shooter, IndexerSubsystem indexer, VisionSubsystem vision, DriveSubsystem drive) {
+        addCommands(
+            new RunCommand(() -> drive.updateSpeed(0, 0, vision.steeringAssist(), false), drive, vision)
+                .alongWith(new InstantCommand(() -> {
+                    double minimum = Constants.SHOOTER_MINIMUM_SPEED;
+                    double maximum = Constants.SHOOTER_MAXIMUM_SPEED;
+                    double aimed = ShooterSubsystem.distanceToRPM(vision.estimateDistance());
+                    double rpm = Math.min(Math.max(aimed, minimum), maximum);
+                    shooter.shoot(rpm);
+                }, shooter, vision))
+                .withTimeout(1.5),
+            new InstantCommand(drive::stop, drive),
+            new InstantCommand(indexer::extend, indexer),
+            new WaitCommand(1),
+            new InstantCommand(indexer::retract, indexer)
+        );
     }
 }

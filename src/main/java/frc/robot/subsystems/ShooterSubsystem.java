@@ -11,10 +11,8 @@ import frc.robot.Constants;
 public class ShooterSubsystem extends SubsystemBase {
     public CANSparkMax bottomMotor, topMotor;
     public SparkMaxPIDController topPID, bottomPID;
-
-    private VisionSubsystem m_vision;
     
-    public ShooterSubsystem(VisionSubsystem vision) {
+    public ShooterSubsystem() {
         bottomMotor = new CANSparkMax(Constants.SHOOTER_PORT_BOTTOM, MotorType.kBrushless);
         topMotor = new CANSparkMax(Constants.SHOOTER_PORT_TOP, MotorType.kBrushless);
         bottomMotor.setIdleMode(IdleMode.kCoast);
@@ -31,20 +29,13 @@ public class ShooterSubsystem extends SubsystemBase {
         topPID.setP(Constants.SHOOTER_P);
         topPID.setI(Constants.SHOOTER_I);
         topPID.setD(Constants.SHOOTER_D);
-
-        m_vision = vision;
     }
 
     public void shoot(double rpm) {
         topPID.setReference(rpm * Constants.SHOOTER_TOP_MOTOR_CHANGE, ControlType.kVelocity);
         bottomPID.setReference(rpm, ControlType.kVelocity);
     }
-
-    public void shootAuto() {
-        topPID.setReference(getClampedRPM() * Constants.SHOOTER_TOP_MOTOR_CHANGE, ControlType.kVelocity);
-        bottomPID.setReference(getClampedRPM(), ControlType.kVelocity);
-    }
-
+    
     public void stop() {
         topPID.setReference(0, ControlType.kVelocity);
         bottomPID.setReference(0, ControlType.kVelocity);
@@ -53,15 +44,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public static double distanceToRPM(double distance) {
        return 1921.5 + (-3.0514 * distance) + (0.0262 * distance * distance);
     }
+
     @Override
     public void periodic() {
         
-    }
-
-    public double getClampedRPM() {
-        double minimum = Constants.SHOOTER_MINIMUM_SPEED;
-        double maximum = Constants.SHOOTER_MAXIMUM_SPEED;
-        double aimed = distanceToRPM(m_vision.estimateDistance());
-        return Math.min(Math.max(aimed, minimum), maximum);
     }
 }
