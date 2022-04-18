@@ -32,12 +32,17 @@ public class ShooterSubsystem extends SubsystemBase {
         topPID.setI(Constants.SHOOTER_I);
         topPID.setD(Constants.SHOOTER_D);
 
-         m_vision = vision;
+        m_vision = vision;
     }
 
     public void shoot(double rpm) {
         topPID.setReference(rpm * Constants.SHOOTER_TOP_MOTOR_CHANGE, ControlType.kVelocity);
         bottomPID.setReference(rpm, ControlType.kVelocity);
+    }
+
+    public void shootAuto() {
+        topPID.setReference(getClampedRPM() * Constants.SHOOTER_TOP_MOTOR_CHANGE, ControlType.kVelocity);
+        bottomPID.setReference(getClampedRPM(), ControlType.kVelocity);
     }
 
     public void stop() {
