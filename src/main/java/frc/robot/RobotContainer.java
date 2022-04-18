@@ -13,7 +13,6 @@ import frc.robot.subsystems.IntakeSubSystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -26,9 +25,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
  
   // Intiating All the subsystems
-  public final DriveSubsystem m_drive = new DriveSubsystem();
-  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final VisionSubsystem m_vision = new VisionSubsystem();
+  public final ShooterSubsystem m_shooter = new ShooterSubsystem(m_vision);
+  public final DriveSubsystem m_drive = new DriveSubsystem(m_vision);
   public final IndexerSubsystem m_indexer = new IndexerSubsystem();
   public final IntakeSubSystem m_intake = new IntakeSubSystem();
   public final ClimberSubsystem m_climber = new ClimberSubsystem();
@@ -48,39 +47,50 @@ public class RobotContainer {
 
     // Invert Drive
     new JoystickButton(m_controller, 3)
-                      .whenPressed(new InstantCommand(m_drive::invertDrive, m_drive));
+                      .whenPressed(new RunCommand(m_drive::invertDrive, m_drive));
 
     // Turns on Intake if held.
     new JoystickButton(m_controller, 2)
-                      .whenHeld(new InstantCommand(m_intake::intakeBall, m_intake))
+                      .whenHeld(new RunCommand(m_intake::intakeBall, m_intake))
                               .whenReleased(m_intake::stop, m_intake);
     
     // Reverse Intake if held
     new JoystickButton(m_controller, 11)
-                      .whenHeld(new InstantCommand(m_intake::spitOutBall, m_intake))
+                      .whenHeld(new RunCommand(m_intake::spitOutBall, m_intake))
                               .whenReleased(m_intake::stop, m_intake);
 
      //Start Intake Deployment
     new JoystickButton(m_controller, 9)
-                      .whenPressed(new InstantCommand(m_intake::startDeployment, m_intake)); 
+                      .whenPressed(new RunCommand(m_intake::startDeployment, m_intake)); 
 
     //End Intake Deployment
     new JoystickButton(m_controller, 10)
-                      .whenPressed(new InstantCommand(m_intake::finishDeployment, m_intake)); 
+                      .whenPressed(new RunCommand(m_intake::finishDeployment, m_intake)); 
 
     // Raising Climber
     new JoystickButton(m_controller, 12) 
-                      .whenHeld(new InstantCommand(m_climber::raise, m_climber))
+                      .whenHeld(new RunCommand(m_climber::raise, m_climber))
                               .whenReleased(m_climber::stop, m_climber);
 
     // Lower Climber
     new JoystickButton(m_controller, 4)
-                      .whenHeld(new InstantCommand(m_climber::lower, m_climber))
+                      .whenHeld(new RunCommand(m_climber::lower, m_climber))
                               .whenReleased(m_climber::stop, m_climber);
 
     // Shoot
     new JoystickButton(m_controller, 1)
-                    .whenHeld(new ShooterTeleop(m_vision, m_shooter, m_indexer, m_drive));
+                    .whenHeld(new ShooterTeleop(m_shooter, m_indexer, m_drive));
+     // new JoystickButton(m_controller, 1)
+                  //.whenHeld(
+                   // new RunCommand(m_drive::updateSpeedAuto, m_drive)
+                   // .alongWith(new RunCommand(m_shooter::shootAuto, m_shooter))
+                   // .withTimeout(1.5)
+                   // .andThen(m_drive::stop, m_drive)
+                   // .andThen(m_indexer::extend, m_indexer)
+                  //  .andThen(new WaitCommand(1))
+                  //.andThen(m_shooter::stop, m_shooter)
+                 // .andThen(m_indexer::retract, m_indexer)
+                 // );
   }
 
   public void teleopDrive() {
