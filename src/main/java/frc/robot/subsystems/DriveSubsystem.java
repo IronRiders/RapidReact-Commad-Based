@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -13,10 +12,11 @@ import frc.robot.Constants;
 public class DriveSubsystem extends SubsystemBase {
     private boolean inverted;
     private CANSparkMax[] motors;
+    private VisionSubsystem m_vision;
 
     public final MecanumDriveKinematics kinematics;
 
-    public  DriveSubsystem() {
+    public  DriveSubsystem(VisionSubsystem vision) {
         this.motors = new CANSparkMax[4];
         this.motors[0] = new CANSparkMax(Constants.WHEEL_PORT_FRONT_LEFT, MotorType.kBrushless);
         this.motors[1] = new CANSparkMax(Constants.WHEEL_PORT_FRONT_RIGHT, MotorType.kBrushless);
@@ -40,6 +40,8 @@ public class DriveSubsystem extends SubsystemBase {
             new Translation2d(0.28575, -0.2267),
             new Translation2d(-0.28575, 0.2267), 
             new Translation2d(-0.28575, -0.2267));
+
+            m_vision = vision;
     }
 
     public void invertDrive() {
@@ -62,6 +64,15 @@ public class DriveSubsystem extends SubsystemBase {
         this.motors[2].set(wheelSpeeds.rearLeftMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
         this.motors[3].set(wheelSpeeds.rearRightMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
     }
+
+    public void updateSpeedAuto() {
+        updateSpeed(0, 0, m_vision.steeringAssist(), false);
+    }
+
+    public void stop() {
+        updateSpeed(0, 0, 0, false);
+    }
+
     @Override
     public void periodic() {
         
