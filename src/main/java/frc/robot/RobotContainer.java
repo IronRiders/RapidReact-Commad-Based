@@ -80,7 +80,7 @@ public class RobotContainer {
 
     // Shoot
     new JoystickButton(m_controller, 1)
-                    .whenHeld(new ShooterTeleop());
+                    .whenHeld(new ShooterTeleop(m_vision, m_shooter, m_indexer, m_drive));
   }
 
   public void teleopDrive() {
