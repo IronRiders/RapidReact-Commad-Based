@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
@@ -30,27 +28,6 @@ public class IntakeSubSystem extends SubsystemBase {
         deploymentMotor.configAllSettings(deploymentConfig);
         deploymentMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         deploymentMotor.setSensorPhase(false);
-    }
-
-    public void startDeployment() {
-        deploymentMotor.set(ControlMode.PercentOutput, Constants.DEPLOY_SPEED);
-        deploymentMotor.setNeutralMode(NeutralMode.Brake);
-    }
-
-    public void finishDeployment() {
-        deploymentMotor.set(ControlMode.PercentOutput, 0.0);
         deploymentMotor.setNeutralMode(NeutralMode.Coast);
-    }
-
-    public void intakeBall() {
-        intakeMotor.set(TalonSRXControlMode.PercentOutput, Constants.INTAKE_SPEED);
-    }
-
-    public void spitOutBall() {
-        intakeMotor.set(TalonSRXControlMode.PercentOutput, -Constants.INTAKE_SPEED);
-    }
-
-    public void stop() {
-        intakeMotor.set(TalonSRXControlMode.PercentOutput, 0);
     }
 }

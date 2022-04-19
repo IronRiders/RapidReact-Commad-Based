@@ -22,19 +22,4 @@ public class ClimberSubsystem extends SubsystemBase {
         climber_motor_2.setIdleMode(IdleMode.kBrake);
         climber_motor_2.setSmartCurrentLimit(currentLimit);
     }
-
-    public void raise() {
-        climber_motor_1.set(Constants.CLIMBER_POWER);
-        climber_motor_2.set(Constants.CLIMBER_POWER);
-    }
-
-    public void lower() {
-        climber_motor_1.set(-Constants.CLIMBER_POWER);
-        climber_motor_2.set(-Constants.CLIMBER_POWER);
-    }
-
-    public void stop() {
-        climber_motor_1.set(0);
-        climber_motor_2.set(0);
-    }
 }

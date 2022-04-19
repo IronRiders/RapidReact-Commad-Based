@@ -24,22 +24,19 @@ public class RobotContainer {
         new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
         // Intake
         new JoystickButton(controller, 2)
-                .whenPressed(new InstantCommand(intake::intakeBall, intake))
-                .whenReleased(new InstantCommand(intake::stop, intake));
+                .whenHeld(new TalonSRXCommand(intake, intake.intakeMotor, Constants.INTAKE_SPEED));
         new JoystickButton(controller, 11)
-                .whenHeld(new InstantCommand(intake::spitOutBall, intake))
-                .whenReleased(new InstantCommand(intake::stop, intake));
+                .whenHeld(new TalonSRXCommand(intake, intake.intakeMotor, -Constants.INTAKE_SPEED));
         // Intake Deployment
-        new JoystickButton(controller, 9).whenPressed(new InstantCommand(intake::startDeployment, intake));
-        new JoystickButton(controller, 10).whenPressed(new InstantCommand(intake::finishDeployment, intake));
+        new JoystickButton(controller, 9)
+                .whenHeld(new TalonSRXCommand(intake, intake.deploymentMotor, Constants.DEPLOY_SPEED));
         // Climber
         new JoystickButton(controller, 12)
-                .whenHeld(new InstantCommand(climber::raise, climber))
-                .whenReleased(new InstantCommand(climber::stop, climber));
-        // Lower Climber
+                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_1, Constants.CLIMBER_POWER))
+                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_2, Constants.CLIMBER_POWER));
         new JoystickButton(controller, 4)
-                .whenHeld(new InstantCommand(climber::lower, climber))
-                .whenReleased(new InstantCommand(climber::stop, climber));
+                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_1, -Constants.CLIMBER_POWER))
+                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_2, -Constants.CLIMBER_POWER));
         // Shoot
         new JoystickButton(controller, 1)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
