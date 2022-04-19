@@ -53,10 +53,4 @@ public class IntakeSubSystem extends SubsystemBase {
     public void stop() {
         intakeMotor.set(TalonSRXControlMode.PercentOutput, 0);
     }
-
-    @Override
-    public void periodic() {
-        
-    }
-    
 }

@@ -17,9 +17,4 @@ public class IndexerSubsystem extends SubsystemBase {
     public void retract() {
         servo.set(0);
     }
-
-    @Override
-    public void periodic() {
-        
-    }
 }

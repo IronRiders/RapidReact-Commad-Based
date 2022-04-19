@@ -1,10 +1,11 @@
 package frc.robot.subsystems;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants; 
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
     public NetworkTable table;
@@ -35,7 +36,6 @@ public class VisionSubsystem extends SubsystemBase {
         double degrees = Constants.VISION_CAMERA_ANGLE + getYAngleOffset();
         // https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
         double distance = Constants.VISION_DELTA_HEIGHT / Math.tan(degrees * Math.PI / 180.0);
-        SmartDashboard.putNumber("estimatedDistance", distance);
         return distance;
     }
 
@@ -43,30 +43,28 @@ public class VisionSubsystem extends SubsystemBase {
     public double distanceAssist() {
         double distanceError = estimateDistance() - Constants.TARGET_DIST;
         if (!getHasTargets() || Math.abs(distanceError) < Constants.OK_DISTANCE) {
-            SmartDashboard.putNumber("Distance Adjustment", 0);
             return 0;
         }
         double adjustment = distanceError * Constants.KP_DIST;
-        adjustment = Math.min(Constants.DIST_MAX_SPEED, Math.max(-Constants.DIST_MAX_SPEED, adjustment));
-        SmartDashboard.putNumber("Distance Adjustment", adjustment);
-        return adjustment;
+        return Math.min(Constants.DIST_MAX_SPEED, Math.max(-Constants.DIST_MAX_SPEED, adjustment));
     }
 
     // Adjusts the angle facing a vision target using Limelight tx and PID
     public double steeringAssist() {
         double offset = getXAngleOffset() - Math.atan(12 / estimateDistance());
         if (!getHasTargets() || Math.abs(offset) < Constants.TURN_MIN_ANGLE) {
-            SmartDashboard.putNumber("Turning Adjustment", 0);
             return 0;
         }
         double adjustment = pidController.calculate(offset);
         adjustment = Math.min(Constants.TURN_MAX_SPEED, Math.max(-Constants.TURN_MAX_SPEED, adjustment));
         adjustment = pidController.atSetpoint() ? 0 : -adjustment;
-        SmartDashboard.putNumber("Turning Adjustment", adjustment);
         return adjustment;
     }
+
     @Override
     public void periodic() {
-        
+        SmartDashboard.putNumber("estimatedDistance", estimateDistance());
+        SmartDashboard.putNumber("Distance Adjustment", distanceAssist());
+        SmartDashboard.putNumber("Turning Adjustment", steeringAssist());
     }
 }

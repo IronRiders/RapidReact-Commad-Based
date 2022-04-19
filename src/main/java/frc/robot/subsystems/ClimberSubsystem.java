@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants; 
 
 public class ClimberSubsystem extends SubsystemBase {
-    CANSparkMax climber_motor_1;
-    CANSparkMax climber_motor_2;
+    public CANSparkMax climber_motor_1;
+    public CANSparkMax climber_motor_2;
 
     public ClimberSubsystem() {
         int currentLimit = 10;
@@ -36,10 +36,5 @@ public class ClimberSubsystem extends SubsystemBase {
     public void stop() {
         climber_motor_1.set(0);
         climber_motor_2.set(0);
-    }
-
-    @Override
-    public void periodic() {
-     
     }
 }

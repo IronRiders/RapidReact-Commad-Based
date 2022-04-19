@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants; 
 
 public class DriveSubsystem extends SubsystemBase {
-    private boolean inverted;
-    private CANSparkMax[] motors;
+    public boolean inverted;
+    public CANSparkMax[] motors;
 
     public final MecanumDriveKinematics kinematics;
 
@@ -64,10 +64,5 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void stop() {
         updateSpeed(0, 0, 0, false);
-    }
-
-    @Override
-    public void periodic() {
-        
     }
 }

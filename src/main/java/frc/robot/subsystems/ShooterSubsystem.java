@@ -44,9 +44,4 @@ public class ShooterSubsystem extends SubsystemBase {
     public static double distanceToRPM(double distance) {
        return 1921.5 + (-3.0514 * distance) + (0.0262 * distance * distance);
     }
-
-    @Override
-    public void periodic() {
-        
-    }
 }
