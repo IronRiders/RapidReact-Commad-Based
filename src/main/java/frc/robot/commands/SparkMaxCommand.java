@@ -7,7 +7,7 @@ public class SparkMaxCommand extends CommandBase {
     private final CANSparkMax motor;
     private final double speed;
 
-    SparkMaxCommand(Subsystem subsystem, CANSparkMax motor, double speed) {
+    public SparkMaxCommand(Subsystem subsystem, CANSparkMax motor, double speed) {
         addRequirements(subsystem);
         this.motor = motor;
         this.speed = speed;
