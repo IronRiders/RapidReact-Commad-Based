@@ -24,17 +24,17 @@ public class RobotContainer {
         new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
         // Intake
         new JoystickButton(controller, 2)
-                .whenHeld(new InlineCommand(intake::intakeBall, intake::stop, intake));        
+                .whenHeld(new StartEndCommand(intake::intakeBall, intake::stop, intake));        
         new JoystickButton(controller, 11)
-                .whenHeld(new InlineCommand(intake::spitOutBall, intake::stop, intake));
+                .whenHeld(new StartEndCommand(intake::spitOutBall, intake::stop, intake));
         // Intake Deployment
         new JoystickButton(controller, 9)
-                .whenHeld(new InlineCommand(intake::startDeployment, intake::finishDeployment, intake));
+                .whenHeld(new StartEndCommand(intake::startDeployment, intake::finishDeployment, intake));
         // Climber
         new JoystickButton(controller, 12)
-                .whenHeld(new InlineCommand(climber::raise, climber::stop, climber));
+                .whenHeld(new StartEndCommand(climber::raise, climber::stop, climber));
         new JoystickButton(controller, 4)
-                .whenHeld(new InlineCommand(climber::lower, climber::stop, climber));
+                .whenHeld(new StartEndCommand(climber::lower, climber::stop, climber));
         // Shoot
         new JoystickButton(controller, 1)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
