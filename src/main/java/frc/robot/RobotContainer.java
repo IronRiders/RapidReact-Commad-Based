@@ -24,19 +24,17 @@ public class RobotContainer {
         new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
         // Intake
         new JoystickButton(controller, 2)
-                .whenHeld(new TalonSRXCommand(intake, intake.intakeMotor, Constants.INTAKE_SPEED));
+                .whenHeld(new InlineCommand(intake::intakeBall, intake::stop, intake));        
         new JoystickButton(controller, 11)
-                .whenHeld(new TalonSRXCommand(intake, intake.intakeMotor, -Constants.INTAKE_SPEED));
+                .whenHeld(new InlineCommand(intake::spitOutBall, intake::stop, intake));
         // Intake Deployment
         new JoystickButton(controller, 9)
-                .whenHeld(new TalonSRXCommand(intake, intake.deploymentMotor, Constants.DEPLOY_SPEED));
+                .whenHeld(new InlineCommand(intake::startDeployment, intake::finishDeployment, intake));
         // Climber
         new JoystickButton(controller, 12)
-                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_1, Constants.CLIMBER_POWER))
-                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_2, Constants.CLIMBER_POWER));
+                .whenHeld(new InlineCommand(climber::raise, climber::stop, climber));
         new JoystickButton(controller, 4)
-                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_1, -Constants.CLIMBER_POWER))
-                .whenHeld(new SparkMaxCommand(climber, climber.climber_motor_2, -Constants.CLIMBER_POWER));
+                .whenHeld(new InlineCommand(climber::lower, climber::stop, climber));
         // Shoot
         new JoystickButton(controller, 1)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
