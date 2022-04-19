@@ -33,8 +33,8 @@ public class RobotContainer {
         // Drive
         drive.setDefaultCommand(new RunCommand(
                 () -> drive.updateSpeed(controller.getRawAxis(0), controller.getRawAxis(1),
-                        controller.getRawAxis(2),
-                        true)));
+                        controller.getRawAxis(3),
+                        true), drive));
         // Invert Drive
         new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
         // Intake
@@ -56,8 +56,8 @@ public class RobotContainer {
             .whenHeld(new InstantCommand(climber::lower, climber))
             .whenReleased(new InstantCommand(climber::stop, climber));
         // Shoot
-        new JoystickButton(controller, 1)
-            .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
+        // new JoystickButton(controller, 1)
+        //     .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
     }
 
     public Command getAutonomousCommand() {

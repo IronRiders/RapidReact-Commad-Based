@@ -46,8 +46,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void updateSpeed(double strafe, double drive, double turn, boolean useInverted) {
-        double xSpeed = strafe * Constants.MOVEMENT_SPEED;
-        double ySpeed = drive * Constants.MOVEMENT_SPEED;
+        double xSpeed = drive * Constants.MOVEMENT_SPEED;
+        double ySpeed = strafe * Constants.MOVEMENT_SPEED;
         if (useInverted && inverted) {
             xSpeed = -xSpeed;
             ySpeed = -ySpeed;
