@@ -19,6 +19,7 @@ public class ShooterTeleop extends SequentialCommandGroup {
             new InstantCommand(drive::stop, drive),
             new InstantCommand(indexer::extend, indexer),
             new WaitCommand(1),
+            new InstantCommand(shooter::stop, shooter),
             new InstantCommand(indexer::retract, indexer)
         );
     }
