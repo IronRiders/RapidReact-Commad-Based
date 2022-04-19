@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants; 
 
 public class ClimberSubsystem extends SubsystemBase {
-    public CANSparkMax climber_motor_1;
-    public CANSparkMax climber_motor_2;
+    private CANSparkMax climber_motor_1;
+    private CANSparkMax climber_motor_2;
 
     public ClimberSubsystem() {
         int currentLimit = 10;

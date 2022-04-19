@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
-    public NetworkTable table;
-    public PIDController pidController;
+    private NetworkTable table;
+    private PIDController pidController;
 
     public VisionSubsystem() {
         table = NetworkTableInstance.getDefault().getTable("limelight");

@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants; 
 
 public class ShooterSubsystem extends SubsystemBase {
-    public CANSparkMax bottomMotor, topMotor;
-    public SparkMaxPIDController topPID, bottomPID;
+    private CANSparkMax bottomMotor, topMotor;
+    private SparkMaxPIDController topPID, bottomPID;
     
     public ShooterSubsystem() {
         bottomMotor = new CANSparkMax(Constants.SHOOTER_PORT_BOTTOM, MotorType.kBrushless);
