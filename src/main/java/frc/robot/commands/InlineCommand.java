@@ -7,6 +7,7 @@ public class InlineCommand extends CommandBase {
     private final Runnable end;
 
     public InlineCommand(Runnable init, Runnable end, Subsystem... requirements) {
+        addRequirements(requirements);
         this.init = init;
         this.end = end;
     }
