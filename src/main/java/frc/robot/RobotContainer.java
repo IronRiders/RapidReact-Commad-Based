@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import frc.robot.commands.IntakeBallCommand;
 import frc.robot.commands.ShooterTeleop;
+import frc.robot.commands.SpitOutBall;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,11 +41,9 @@ public class RobotContainer {
         new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
         // Intake
         new JoystickButton(controller, 2)
-            .whenPressed(new InstantCommand(intake::intakeBall, intake))
-            .whenReleased(new InstantCommand(intake::stop, intake));
+            .whileHeld(new IntakeBallCommand(intake));
         new JoystickButton(controller, 11)
-            .whenHeld(new InstantCommand(intake::spitOutBall, intake))
-            .whenReleased(new InstantCommand(intake::stop, intake));
+            .whileHeld(new SpitOutBall(intake));
         // Intake Deployment
         new JoystickButton(controller, 9).whenPressed(new InstantCommand(intake::startDeployment, intake));
         new JoystickButton(controller, 10).whenPressed(new InstantCommand(intake::finishDeployment, intake));
