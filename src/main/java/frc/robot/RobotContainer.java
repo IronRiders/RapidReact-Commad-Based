@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.*;
+import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -35,8 +36,8 @@ public class RobotContainer {
         new JoystickButton(controller, 4)
                 .whenHeld(new StartEndCommand(climber::lower, climber::stop, climber));
         // Shoot
-        //new JoystickButton(controller, 1)
-                //.whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
+        new JoystickButton(controller, 1)
+                .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
     }
 
     public Command getAutonomousCommand() {

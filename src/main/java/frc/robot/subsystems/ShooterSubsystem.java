@@ -32,6 +32,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shoot(double rpm) {
+        double minimum = Constants.SHOOTER_MINIMUM_SPEED;
+        double maximum = Constants.SHOOTER_MAXIMUM_SPEED;
+        rpm = Math.min(Math.max(rpm, minimum), maximum);
         topPID.setReference(rpm * Constants.SHOOTER_TOP_MOTOR_CHANGE, ControlType.kVelocity);
         bottomPID.setReference(rpm, ControlType.kVelocity);
     }
