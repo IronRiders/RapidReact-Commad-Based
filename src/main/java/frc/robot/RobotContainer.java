@@ -20,24 +20,30 @@ public class RobotContainer {
         // Drive
         drive.setDefaultCommand(new RunCommand(() -> drive.updateSpeed(controller.getRawAxis(0),
                 controller.getRawAxis(1), controller.getRawAxis(3), true), drive));
-        // Invert Drive
-        new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
-        // Intake
-        new JoystickButton(controller, 2)
-                .whenHeld(new StartEndCommand(intake::intakeBall, intake::stop, intake));        
-        new JoystickButton(controller, 11)
-                .whenHeld(new StartEndCommand(intake::spitOutBall, intake::stop, intake));
-        // Intake Deployment
-        new JoystickButton(controller, 9)
-                .whenHeld(new StartEndCommand(intake::startDeployment, intake::finishDeployment, intake));
-        // Climber
-        new JoystickButton(controller, 12)
-                .whenHeld(new StartEndCommand(climber::raise, climber::stop, climber));
-        new JoystickButton(controller, 4)
-                .whenHeld(new StartEndCommand(climber::lower, climber::stop, climber));
-        // Shoot
+
         new JoystickButton(controller, 1)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
+
+        new JoystickButton(controller, 2)
+                .whenHeld(new StartEndCommand(intake::intakeBall, intake::stop, intake));
+
+        new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
+
+        new JoystickButton(controller, 4)
+                .whenHeld(new StartEndCommand(climber::lower, climber::stop, climber));
+
+        new JoystickButton(controller, 5)
+                .whenHeld(CommandFactory.runIndexerCommand(indexer));
+
+        new JoystickButton(controller, 9)
+                .whenHeld(new StartEndCommand(intake::startDeployment, intake::finishDeployment,
+                        intake));
+
+        new JoystickButton(controller, 11)
+                .whenHeld(new StartEndCommand(intake::spitOutBall, intake::stop, intake));
+
+        new JoystickButton(controller, 12)
+                .whenHeld(new StartEndCommand(climber::raise, climber::stop, climber));
     }
 
     public Command getAutonomousCommand() {
