@@ -53,7 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
             ySpeed = -ySpeed;
         }
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turn * Constants.TURN_SPEED);
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turn * -Constants.TURN_SPEED);
         MecanumDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds); 
 
         this.motors[0].set(wheelSpeeds.frontLeftMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
