@@ -10,7 +10,6 @@ public class ShooterTeleop extends SequentialCommandGroup {
     public ShooterTeleop(ShooterSubsystem shooter, IndexerSubsystem indexer, VisionSubsystem vision, DriveSubsystem drive) {
         this.shooter = shooter;
         this.indexer = indexer;
-        if (vision.estimateDistance() < 142 && vision.estimateDistance() > 138) {
         addCommands(
             new RunCommand(() -> {
                 drive.updateSpeed(0, 0, vision.steeringAssist(), false);
@@ -19,7 +18,6 @@ public class ShooterTeleop extends SequentialCommandGroup {
             new InstantCommand(drive::stop, drive),
             CommandFactory.runIndexerCommand(indexer));
         }
-    }
 
     @Override
     public void end(boolean interrupted) {
