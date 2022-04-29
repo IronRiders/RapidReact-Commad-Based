@@ -21,11 +21,11 @@ public class RobotContainer {
         drive.setDefaultCommand(new RunCommand(() -> drive.updateSpeed(controller.getRawAxis(0),
                 controller.getRawAxis(1), controller.getRawAxis(3), true), drive));
 
-        new JoystickButton(controller, 1)
+        new JoystickButton(controller, 2)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
 
-        new JoystickButton(controller, 2)
-                .whenHeld(new StartEndCommand(intake::intakeBall, intake::stop, intake));
+        // JoystickButton(controller, 2)
+               // .whenHeld(new StartEndCommand(intake::intakeBall, intake::stop, intake));
 
         new JoystickButton(controller, 3).whenPressed(new InstantCommand(drive::invertDrive, drive));
 
