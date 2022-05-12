@@ -17,14 +17,11 @@ public class MecanumPathFollower extends PPMecanumControllerCommand {
     private static PIDController xController = new PIDController(Constants.AUTO_POSITION_KP, 0, 0);
     private static PIDController yController = new PIDController(Constants.AUTO_POSITION_KP, 0, 0);
 
-
     public MecanumPathFollower(PathPlannerTrajectory trajectory, DriveSubsystem drive) {
        super(trajectory, 
        () -> drive.getPose2d(), 
        drive.getKinematics(), 
-       xController,
-       yController,
-       thetaController, MecanumWheel.getMaxLinearVelocity(), (speed) -> drive.SetWheelSpeeds(speed), drive);
+       xController, yController, thetaController, 
+       MecanumWheel.getMaxLinearVelocity(), (speed) -> drive.SetWheelSpeeds(speed), drive);
     }
-    
 }

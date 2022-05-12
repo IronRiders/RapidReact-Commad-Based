@@ -69,7 +69,7 @@ public final class Constants {
     // Climber
     public static final double CLIMBER_POWER = 1;
 
-    //Auto
+    // Auto
     public static final double DIAMETER = Units.inchesToMeters(7.9);
     public static final double wheel_circumference = Units.inchesToMeters(DIAMETER * Math.PI);
 

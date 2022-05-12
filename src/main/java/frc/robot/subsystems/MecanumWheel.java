@@ -12,15 +12,13 @@ public class MecanumWheel {
     private final CANSparkMax motor;
     private RelativeEncoder encoder;
     private PIDController pidController;
-    private static SimpleMotorFeedforward feedForward  = new SimpleMotorFeedforward(0, 0, 0);
+    private static SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0, 0, 0);
 
-    
     public MecanumWheel(int motorId, boolean inverted) {
-       motor = new CANSparkMax(motorId, MotorType.kBrushless);
-       motor.setInverted(inverted);
-       motor.setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
+        motor = new CANSparkMax(motorId, MotorType.kBrushless);
+        motor.setInverted(inverted);
+        motor.setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
         encoder = motor.getEncoder();
-
         pidController = new PIDController(Constants.AUTO_WHEELPID_KP, 0.0, 0.0);
     }
 
