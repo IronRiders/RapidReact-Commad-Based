@@ -1,68 +1,107 @@
 package frc.robot.subsystems;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants; 
+import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
     private boolean inverted;
-    private CANSparkMax[] motors;
-
+    private MecanumWheel[] motors;
     private final MecanumDriveKinematics kinematics;
+    private final MecanumDriveOdometry odometry;
+    private final AHRS navx;
 
-    public  DriveSubsystem() {
-        this.motors = new CANSparkMax[4];
-        this.motors[0] = new CANSparkMax(Constants.WHEEL_PORT_FRONT_LEFT, MotorType.kBrushless);
-        this.motors[1] = new CANSparkMax(Constants.WHEEL_PORT_FRONT_RIGHT, MotorType.kBrushless);
-        this.motors[2] = new CANSparkMax(Constants.WHEEL_PORT_REAR_LEFT, MotorType.kBrushless);
-        this.motors[3] = new CANSparkMax(Constants.WHEEL_PORT_REAR_RIGHT, MotorType.kBrushless);
+    public DriveSubsystem() {
 
-        this.motors[0].setInverted(true);
-        this.motors[1].setInverted(false);
-        this.motors[2].setInverted(true);
-        this.motors[3].setInverted(false);
+        motors[0] = new MecanumWheel(Constants.WHEEL_PORT_FRONT_LEFT, true);
+        motors[1] = new MecanumWheel(Constants.WHEEL_PORT_FRONT_RIGHT, false);
+        motors[2] = new MecanumWheel(Constants.WHEEL_PORT_REAR_LEFT, true);
+        motors[3] = new MecanumWheel(Constants.WHEEL_PORT_REAR_RIGHT, false);
         inverted = false;
-
-        motors[0].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
-        motors[1].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
-        motors[2].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
-        motors[3].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
 
         // meter per second
         kinematics = new MecanumDriveKinematics(
-            new Translation2d(0.28575, 0.2267), 
-            new Translation2d(0.28575, -0.2267),
-            new Translation2d(-0.28575, 0.2267), 
-            new Translation2d(-0.28575, -0.2267));
+                new Translation2d(0.28575, 0.2267),
+                new Translation2d(0.28575, -0.2267),
+                new Translation2d(-0.28575, 0.2267),
+                new Translation2d(-0.28575, -0.2267));
+
+        navx = new AHRS();
+        odometry = new MecanumDriveOdometry(kinematics, new Rotation2d());
     }
 
     public void invertDrive() {
         inverted = !inverted;
     }
 
-    public void updateSpeed(double strafe, double drive, double turn, boolean useInverted) {
-        double xSpeed = drive * Constants.MOVEMENT_SPEED;
-        double ySpeed = strafe * Constants.MOVEMENT_SPEED;
+    public MecanumDriveWheelSpeeds getWheelSpeeds() {
+        return new MecanumDriveWheelSpeeds(motors[0].getVelocity(),
+                motors[1].getVelocity(),
+                motors[2].getVelocity(),
+                motors[3].getVelocity());
+    }
+
+    @Override
+    public void periodic() {
+        odometry.update(navx.getRotation2d(), getWheelSpeeds());
+        super.periodic();
+    }
+
+    public Pose2d getPose2d() {
+        return odometry.getPoseMeters();
+    }
+
+    public double MetersPerSecondToPercentages() {
+        return 0;
+    }
+
+    public MecanumDriveKinematics getKinematics() {
+        return kinematics;
+    }
+
+    public void SetWheelSpeeds(MecanumDriveWheelSpeeds speed) {
+        motors[0].setVelocity(speed.frontLeftMetersPerSecond);
+        motors[1].setVelocity(speed.frontRightMetersPerSecond);
+        motors[2].setVelocity(speed.rearLeftMetersPerSecond);
+        motors[3].setVelocity(speed.rearRightMetersPerSecond);
+    }
+
+    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        SetWheelSpeeds(kinematics.toWheelSpeeds(chassisSpeeds));
+    }
+
+    public void setChassisSpeeds(double strafe, double drive, double turn, boolean useInverted) {
         if (useInverted && inverted) {
-            xSpeed = -xSpeed;
-            ySpeed = -ySpeed;
+            drive = -drive;
+            strafe = -strafe;
         }
+        setChassisSpeeds(new ChassisSpeeds(
+                drive * MecanumWheel.getMaxLinearVelocity(),
+                strafe * MecanumWheel.getMaxLinearVelocity(),
+                turn * getMaxRotationalVelocity()));
+    }
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turn * -Constants.TURN_SPEED);
-        MecanumDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds); 
-
-        this.motors[0].set(wheelSpeeds.frontLeftMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-        this.motors[1].set(wheelSpeeds.frontRightMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-        this.motors[2].set(wheelSpeeds.rearLeftMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-        this.motors[3].set(wheelSpeeds.rearRightMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
+    public double getMaxRotationalVelocity() {
+        return Math.abs((kinematics.toChassisSpeeds(new MecanumDriveWheelSpeeds(
+                MecanumWheel.getMaxLinearVelocity(),
+                -MecanumWheel.getMaxLinearVelocity(),
+                MecanumWheel.getMaxLinearVelocity(),
+                -MecanumWheel.getMaxLinearVelocity()))).omegaRadiansPerSecond);
     }
 
     public void stop() {
-        updateSpeed(0, 0, 0, false);
+        setChassisSpeeds(0, 0, 0, true);
+    }
+
+    public void resetOdometry(Pose2d pose2d) {
+        odometry.resetPosition(pose2d, navx.getRotation2d());
     }
 }

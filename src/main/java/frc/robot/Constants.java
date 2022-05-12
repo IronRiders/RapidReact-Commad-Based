@@ -1,9 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 public final class Constants {
+
     // Drivetrain
     public static final double DRIVE_SPEED_MULT = 1.0; // should be between 0 and 1
-    public static final double DRIVE_SPEED_AUTO = 0.1 / DRIVE_SPEED_MULT;
+    public static final double DRIVE_SPEED_AUTO = 1 / DRIVE_SPEED_MULT;
     public static final int DRIVE_CURRENT_LIMIT = 40;
     public static final double MOVEMENT_SPEED = 1; // meters per second
     public static final double TURN_SPEED = 1; // radians per second
@@ -65,4 +68,14 @@ public final class Constants {
 
     // Climber
     public static final double CLIMBER_POWER = 1;
+
+    //Auto
+    public static final double DIAMETER = Units.inchesToMeters(7.9);
+    public static final double wheel_circumference = Units.inchesToMeters(DIAMETER * Math.PI);
+
+    public static final double AUTO_POSITION_KP = 0.1;
+    public static final double AUTO_THETACONTROLLER_KP = 0.1;
+    public static final double AUTO_WHEELPID_KP = 0.1;
+    public static final double DRIVE_ACCELERATION_AUTO = 1;
+
 }

@@ -1,5 +1,10 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
@@ -18,7 +23,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         // Drive
-        drive.setDefaultCommand(new RunCommand(() -> drive.updateSpeed(controller.getRawAxis(0),
+        drive.setDefaultCommand(new RunCommand(() -> drive.setChassisSpeeds(controller.getRawAxis(0),
                 controller.getRawAxis(1), controller.getRawAxis(3), true), drive));
 
         new JoystickButton(controller, 1)
@@ -47,6 +52,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null;
+            PathPlannerTrajectory path = PathPlanner.loadPath("Part 1", Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
+        return new MecanumPathFollower(path, drive).beforeStarting(() -> drive.resetOdometry(
+                new Pose2d(path.getInitialPose().getTranslation(), ((PathPlannerState)path.sample(0)).holonomicRotation)), drive);
     }
 }
