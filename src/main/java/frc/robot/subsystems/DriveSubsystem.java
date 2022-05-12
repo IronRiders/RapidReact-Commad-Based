@@ -59,10 +59,6 @@ public class DriveSubsystem extends SubsystemBase {
         return odometry.getPoseMeters();
     }
 
-    public double MetersPerSecondToPercentages() {
-        return 0;
-    }
-
     public MecanumDriveKinematics getKinematics() {
         return kinematics;
     }
