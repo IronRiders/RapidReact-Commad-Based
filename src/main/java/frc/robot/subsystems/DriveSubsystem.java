@@ -52,7 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.update(navx.getRotation2d(), getWheelSpeeds());
-        super.periodic();
+        periodic();
     }
 
     public Pose2d getPose2d() {
