@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants; 
 
@@ -13,7 +14,7 @@ public class DriveSubsystem extends SubsystemBase {
     private boolean inverted;
     private CANSparkMax[] motors;
 
-    private final MecanumDriveKinematics kinematics;
+    public MecanumDrive drive;
 
     public  DriveSubsystem() {
         this.motors = new CANSparkMax[4];
@@ -33,36 +34,10 @@ public class DriveSubsystem extends SubsystemBase {
         motors[2].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
         motors[3].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
 
-        // meter per second
-        kinematics = new MecanumDriveKinematics(
-            new Translation2d(0.28575, 0.2267), 
-            new Translation2d(0.28575, -0.2267),
-            new Translation2d(-0.28575, 0.2267), 
-            new Translation2d(-0.28575, -0.2267));
+        drive = new MecanumDrive(this.motors[0], this.motors[1], this.motors[2], this.motors[3]);
     }
 
     public void invertDrive() {
         inverted = !inverted;
-    }
-
-    public void updateSpeed(double strafe, double drive, double turn, boolean useInverted) {
-        double xSpeed = drive * Constants.MOVEMENT_SPEED;
-        double ySpeed = strafe * Constants.MOVEMENT_SPEED;
-        if (useInverted && inverted) {
-            xSpeed = -xSpeed;
-            ySpeed = -ySpeed;
-        }
-
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turn * -Constants.TURN_SPEED);
-        MecanumDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds); 
-
-        this.motors[0].set(wheelSpeeds.frontLeftMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-        this.motors[1].set(wheelSpeeds.frontRightMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-        this.motors[2].set(wheelSpeeds.rearLeftMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-        this.motors[3].set(wheelSpeeds.rearRightMetersPerSecond * Constants.DRIVE_SPEED_MULT / Constants.MOVEMENT_SPEED);
-    }
-
-    public void stop() {
-        updateSpeed(0, 0, 0, false);
     }
 }
