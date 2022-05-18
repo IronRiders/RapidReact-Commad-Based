@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,7 +11,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -19,6 +24,11 @@ public class DriveSubsystem extends SubsystemBase {
     private final MecanumDriveKinematics kinematics;
     private final MecanumDriveOdometry odometry;
     private final AHRS navx;
+
+    private static ProfiledPIDController thetaController = new ProfiledPIDController(Constants.AUTO_THETACONTROLLER_KP, 0, 0, 
+    new TrapezoidProfile.Constraints(Units.rotationsToRadians(0.75), Units.rotationsToRadians(1.5)));
+    private static PIDController xController = new PIDController(Constants.AUTO_POSITION_KP, 0, 0);
+    private static PIDController yController = new PIDController(Constants.AUTO_POSITION_KP, 0, 0);
 
     public DriveSubsystem() {
 
@@ -37,6 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         navx = new AHRS();
         odometry = new MecanumDriveOdometry(kinematics, new Rotation2d());
+        thetaController.enableContinuousInput(-180, 180); // For more efficiency when turning.
     }
 
     public void invertDrive() {
@@ -54,6 +65,12 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         NetworkTableInstance.getDefault().flush();
         odometry.update(navx.getRotation2d(), getWheelSpeeds());
+        SmartDashboard.putNumber("x controller", getPose2d().getX());
+        SmartDashboard.putNumber("x Controller (target)", yController.getSetpoint());
+        SmartDashboard.putNumber("Y controller", getPose2d().getY());
+        SmartDashboard.putNumber("y Controller (target)", xController.getSetpoint());
+        SmartDashboard.putNumber("Theta controller (Degrees)", getPose2d().getRotation().getDegrees());
+        SmartDashboard.putNumber("Theta setPoint (Target))", Math.toDegrees(thetaController.getSetpoint().position)); 
         periodic();
     }
 
@@ -101,5 +118,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose2d) {
         odometry.resetPosition(pose2d, navx.getRotation2d());
+    }
+
+    public ProfiledPIDController getThetaController() {
+        return thetaController;
+    }
+    public PIDController getxController() {
+        return xController;
+    }
+    public PIDController getyController() {
+        return yController;
     }
 }

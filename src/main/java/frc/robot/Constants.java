@@ -73,9 +73,9 @@ public final class Constants {
     public static final double DIAMETER = Units.inchesToMeters(7.9);
     public static final double wheel_circumference = Units.inchesToMeters(DIAMETER * Math.PI);
 
-    public static final double AUTO_POSITION_KP = 0.1;
-    public static final double AUTO_THETACONTROLLER_KP = 0.1;
-    public static final double AUTO_WHEELPID_KP = 0.1;
+    public static final double AUTO_POSITION_KP = 0;
+    public static final double AUTO_THETACONTROLLER_KP = 0;
+    public static final double AUTO_WHEELPID_KP = 0;
     public static final double DRIVE_ACCELERATION_AUTO = 1;
 
 }
