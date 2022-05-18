@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -51,6 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        NetworkTableInstance.getDefault().flush();
         odometry.update(navx.getRotation2d(), getWheelSpeeds());
         periodic();
     }
