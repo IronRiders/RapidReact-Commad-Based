@@ -20,7 +20,7 @@ import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
     private boolean inverted;
-    private MecanumWheel[] motors;
+    private MecanumWheel[] motors = new MecanumWheel[4];
     private final MecanumDriveKinematics kinematics;
     private final MecanumDriveOdometry odometry;
     private final AHRS navx;
