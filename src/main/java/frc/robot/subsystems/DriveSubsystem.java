@@ -71,7 +71,6 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("y Controller (target)", xController.getSetpoint());
         SmartDashboard.putNumber("Theta controller (Degrees)", getPose2d().getRotation().getDegrees());
         SmartDashboard.putNumber("Theta setPoint (Target))", Math.toDegrees(thetaController.getSetpoint().position)); 
-        periodic();
     }
 
     public Pose2d getPose2d() {
