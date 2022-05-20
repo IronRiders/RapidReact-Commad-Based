@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -63,6 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // Tuning
         NetworkTableInstance.getDefault().flush();
         odometry.update(navx.getRotation2d(), getWheelSpeeds());
         SmartDashboard.putNumber("x controller", getPose2d().getX());
@@ -97,10 +97,17 @@ public class DriveSubsystem extends SubsystemBase {
             drive = -drive;
             strafe = -strafe;
         }
-        setChassisSpeeds(new ChassisSpeeds(
-                drive * MecanumWheel.getMaxLinearVelocity(),
-                strafe * MecanumWheel.getMaxLinearVelocity(),
-                turn * getMaxRotationalVelocity()));
+
+        double xspeed = drive * MecanumWheel.getMaxLinearVelocity();
+        double yspeed = strafe * MecanumWheel.getMaxLinearVelocity();
+        double turnspeed = turn * getMaxRotationalVelocity();
+
+        // Debugging
+        SmartDashboard.putNumber("DriveSubsystem/xSpeed", xspeed);
+        SmartDashboard.putNumber("DriveSubsystem/ySpeed", yspeed);
+        SmartDashboard.putNumber("DriveSubsystem/turnSpeed", turnspeed);
+
+        setChassisSpeeds(new ChassisSpeeds(xspeed, yspeed, turnspeed));
     }
 
     public double getMaxRotationalVelocity() {

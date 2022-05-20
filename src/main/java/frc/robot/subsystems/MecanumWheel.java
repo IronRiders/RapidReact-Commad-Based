@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class MecanumWheel {
@@ -20,6 +21,11 @@ public class MecanumWheel {
         motor.setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
         encoder = motor.getEncoder();
         pidController = new PIDController(Constants.AUTO_WHEELPID_KP, 0.0, 0.0);
+    }
+
+    public void log() {
+        SmartDashboard.putNumber("MecanumWheel/Max Linear Velocity", getMaxLinearVelocity());
+        SmartDashboard.putNumber("MecanumWheel/Velocity", getVelocity());
     }
 
     public double getVelocity() {
