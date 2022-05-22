@@ -100,7 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         double xspeed = drive * MecanumWheel.getMaxLinearVelocity();
         double yspeed = strafe * MecanumWheel.getMaxLinearVelocity();
-        double turnspeed = turn * getMaxRotationalVelocity();
+        double turnspeed = turn * -getMaxRotationalVelocity();
 
         // Debugging
         SmartDashboard.putNumber("DriveSubsystem/xSpeed", xspeed);

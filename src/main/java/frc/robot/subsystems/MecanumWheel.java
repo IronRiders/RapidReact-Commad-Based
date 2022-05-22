@@ -13,7 +13,7 @@ public class MecanumWheel {
     private final CANSparkMax motor;
     private RelativeEncoder encoder;
     private PIDController pidController;
-    private static SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0, 0, 0);
+    private static SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.2, 2, 0.2);
 
     public MecanumWheel(int motorId, boolean inverted) {
         motor = new CANSparkMax(motorId, MotorType.kBrushless);
