@@ -3,6 +3,8 @@
     "Analysis Type": "General Mechanism",
     "NetworkTables Settings": {
       "serverTeam": "4180"
-    }
+    },
+    "mode": "Client",
+    "serverTeam": "localhost"
   }
 }
