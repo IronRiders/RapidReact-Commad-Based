@@ -23,10 +23,10 @@ public class DriveSubsystem extends SubsystemBase {
         this.motors[2] = new CANSparkMax(Constants.WHEEL_PORT_REAR_LEFT, MotorType.kBrushless);
         this.motors[3] = new CANSparkMax(Constants.WHEEL_PORT_REAR_RIGHT, MotorType.kBrushless);
 
-        this.motors[0].setInverted(true);
+        this.motors[0].setInverted(false);
         this.motors[1].setInverted(false);
         this.motors[2].setInverted(true);
-        this.motors[3].setInverted(false);
+        this.motors[3].setInverted(true);
         inverted = false;
 
         motors[0].setSmartCurrentLimit(Constants.DRIVE_CURRENT_LIMIT);
