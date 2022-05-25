@@ -10,13 +10,13 @@ public class ShooterTeleop extends SequentialCommandGroup {
     public ShooterTeleop(ShooterSubsystem shooter, IndexerSubsystem indexer, VisionSubsystem vision, DriveSubsystem drive) {
         this.shooter = shooter;
         this.indexer = indexer;
-        addCommands(
-            new RunCommand(() -> {
-                drive.updateSpeed(0, 0, vision.steeringAssist(), false);
-                shooter.shoot(ShooterSubsystem.distanceToRPM(vision.estimateDistance()));
-            }, drive, shooter, vision).withTimeout(1.5),
-            new InstantCommand(drive::stop, drive),
-            CommandFactory.runIndexerCommand(indexer));
+        // addCommands(
+        //     new RunCommand(() -> {
+        //         drive.updateSpeed(0, 0, vision.steeringAssist(), false);
+        //         shooter.shoot(ShooterSubsystem.distanceToRPM(vision.estimateDistance()));
+        //     }, drive, shooter, vision).withTimeout(1.5),
+        //     new InstantCommand(drive::stop, drive),
+        //     CommandFactory.runIndexerCommand(indexer));
     }
 
     @Override

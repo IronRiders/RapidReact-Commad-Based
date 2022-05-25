@@ -19,8 +19,8 @@ public class RobotContainer {
     public RobotContainer() {
         // Drive
         drive.setDefaultCommand(new RunCommand(() -> drive.drive.driveCartesian(controller.getRawAxis(0),
-                controller.getRawAxis(1), controller.getRawAxis(3))));
-
+                controller.getRawAxis(1), controller.getRawAxis(3)), drive));
+        
         new JoystickButton(controller, 1)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
 
