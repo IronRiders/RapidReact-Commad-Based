@@ -5,6 +5,9 @@ import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
+
 
 public class RobotContainer {
     public final VisionSubsystem vision = new VisionSubsystem();
@@ -15,11 +18,12 @@ public class RobotContainer {
     public final ClimberSubsystem climber = new ClimberSubsystem();
 
     public static GenericHID controller = new GenericHID(0);
+    public AHRS thing = new AHRS(SerialPort.Port.kMXP);
 
     public RobotContainer() {
         // Drive
         drive.setDefaultCommand(new RunCommand(() -> drive.drive.driveCartesian(controller.getRawAxis(0),
-                controller.getRawAxis(1), controller.getRawAxis(3)), drive));
+                controller.getRawAxis(1), controller.getRawAxis(3), (thing.getAngle() + 73.0)), drive));
         
         new JoystickButton(controller, 1)
                 .whenHeld(new ShooterTeleop(shooter, indexer, vision, drive));
