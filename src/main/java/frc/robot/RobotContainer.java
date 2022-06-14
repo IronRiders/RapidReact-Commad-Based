@@ -52,7 +52,7 @@ public class RobotContainer {
         }
 
         public Command getAutonomousCommand() {
-                PathPlannerTrajectory path = PathPlanner.loadPath("Part 1", Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
+                PathPlannerTrajectory path = PathPlanner.loadPath("5BallAutoBlue", Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
                 return new MecanumPathFollower(path, drive).beforeStarting(() -> drive.resetOdometry(
                                 new Pose2d(path.getInitialPose().getTranslation(),
                                                 ((PathPlannerState) path.sample(0)).holonomicRotation)), drive);
