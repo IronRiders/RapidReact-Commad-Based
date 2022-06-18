@@ -23,7 +23,7 @@ public class AutoCommandFactory {
 
         return new SequentialCommandGroup(
 
-            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall1", drive, false), drive))
+            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall1", drive, true), drive))
             .alongWith(new RunCommand(intaker::intakeBall, intaker)).beforeStarting(cmd),
             new ShooterTeleop(shooter, indexer, vision, drive),
 
