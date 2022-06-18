@@ -1,10 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
@@ -20,6 +15,8 @@ public class RobotContainer {
         public final ClimberSubsystem climber = new ClimberSubsystem();
 
         public static GenericHID controller = new GenericHID(0);
+        
+        AutoCommandFactory AutocmdFactory = new AutoCommandFactory(); 
 
         public RobotContainer() {
 
@@ -51,10 +48,11 @@ public class RobotContainer {
                                 .whenHeld(new StartEndCommand(climber::raise, climber::stop, climber));
         }
 
-        public Command getAutonomousCommand() {
-                PathPlannerTrajectory path = PathPlanner.loadPath("5BallAutoBlue", Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
+        public Command GetAutonomousCommand() {
+               /* PathPlannerTrajectory path = PathPlanner.loadPath("Part 1", Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
                 return new MecanumPathFollower(path, drive).beforeStarting(() -> drive.resetOdometry(
                                 new Pose2d(path.getInitialPose().getTranslation(),
-                                                ((PathPlannerState) path.sample(0)).holonomicRotation)), drive);
+                                                ((PathPlannerState) path.sample(0)).holonomicRotation)), drive);*/
+                return AutocmdFactory.FiveBallAuto(shooter, drive, intake, indexer, vision);
         }
 }

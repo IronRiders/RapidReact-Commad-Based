@@ -20,7 +20,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        autoCommand = robotContainer.getAutonomousCommand();
+        autoCommand = robotContainer.GetAutonomousCommand();
+        if (autoCommand != null)
         autoCommand.schedule();
     }
 
