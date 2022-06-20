@@ -17,38 +17,39 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AutoCommandFactory {
-    private Command cmd;
 
-    public SequentialCommandGroup FiveBallAuto(ShooterSubsystem shooter, DriveSubsystem drive, IntakeSubSystem intaker, IndexerSubsystem indexer, VisionSubsystem vision) {
+  public SequentialCommandGroup FiveBallAuto(ShooterSubsystem shooter, DriveSubsystem drive, IntakeSubSystem intaker,
+      IndexerSubsystem indexer, VisionSubsystem vision) {
 
-        return new SequentialCommandGroup(
+    return new SequentialCommandGroup(
+        new ParallelDeadlineGroup(
+            autoPath("FiveBall1", drive, true),
+            new RunCommand(intaker::intakeBall, intaker)),
+        new ShooterTeleop(shooter, indexer, vision, drive),
 
-            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall1", drive, true), drive))
-            .alongWith(new RunCommand(intaker::intakeBall, intaker)).beforeStarting(cmd),
-            new ShooterTeleop(shooter, indexer, vision, drive),
+        new ParallelDeadlineGroup(
+            autoPath("FiveBall2", drive, false),
+            new RunCommand(intaker::intakeBall, intaker)),
 
-            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall2", drive, false), drive))
-            .alongWith(new RunCommand(intaker::intakeBall, intaker)),
+        autoPath("FiveBall3", drive, false),
+        new ShooterTeleop(shooter, indexer, vision, drive),
 
-            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall3", drive, false), drive)),
-            new ShooterTeleop(shooter, indexer, vision, drive),
+        new ParallelDeadlineGroup(
+            autoPath("FiveBall4", drive, false),
+            new RunCommand(intaker::intakeBall, intaker)),
 
-            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall4", drive, false), drive))
-            .alongWith(new RunCommand(intaker::intakeBall, intaker)),
+        autoPath("FiveBall5", drive, false),
+        new ShooterTeleop(shooter, indexer, vision, drive));
+  }
 
-            new ParallelDeadlineGroup(new MecanumPathFollower(autoPath("FiveBall5", drive, false), drive)),
-            new ShooterTeleop(shooter, indexer, vision, drive)
-        );
+  public Command autoPath(String p, DriveSubsystem drive, boolean initial) {
+    PathPlannerTrajectory path = PathPlanner.loadPath(p, Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
+    Command cmd = new MecanumPathFollower(path, drive);
+    if (initial) {
+      cmd = cmd.beforeStarting(() -> drive.resetOdometry(new Pose2d(
+          path.getInitialPose().getTranslation(),
+          ((PathPlannerState) path.sample(0)).holonomicRotation)));
     }
-    public PathPlannerTrajectory autoPath(String p, DriveSubsystem drive, boolean initial){
-         PathPlannerTrajectory path = PathPlanner.loadPath(p, Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
-         cmd = new MecanumPathFollower(path, drive);
-        if(initial){
-          cmd = cmd.beforeStarting(()->drive.resetOdometry(new Pose2d(
-            path.getInitialPose().getTranslation(),
-            ((PathPlannerState)path.sample(0)).holonomicRotation
-          )));
-        }
-        return path;
-      }
+    return cmd;
+  }
 }
