@@ -16,7 +16,7 @@ public class RobotContainer {
 
         public static GenericHID controller = new GenericHID(0);
         
-        AutoCommandFactory AutocmdFactory = new AutoCommandFactory(); 
+        AutoCommandFactory autocmdFactory = new AutoCommandFactory(shooter, drive, intake, indexer, vision);
 
         public RobotContainer() {
 
@@ -48,11 +48,7 @@ public class RobotContainer {
                                 .whenHeld(new StartEndCommand(climber::raise, climber::stop, climber));
         }
 
-        public Command GetAutonomousCommand() {
-               /* PathPlannerTrajectory path = PathPlanner.loadPath("Part 1", Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
-                return new MecanumPathFollower(path, drive).beforeStarting(() -> drive.resetOdometry(
-                                new Pose2d(path.getInitialPose().getTranslation(),
-                                                ((PathPlannerState) path.sample(0)).holonomicRotation)), drive);*/
-                return AutocmdFactory.FiveBallAuto(shooter, drive, intake, indexer, vision);
+        public Command getAutonomousCommand() {
+                return autocmdFactory.fiveBallAuto();
         }
 }

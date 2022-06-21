@@ -18,31 +18,49 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class AutoCommandFactory {
 
-  public SequentialCommandGroup FiveBallAuto(ShooterSubsystem shooter, DriveSubsystem drive, IntakeSubSystem intaker,
-      IndexerSubsystem indexer, VisionSubsystem vision) {
+  private final ShooterSubsystem shooter;
+  private final DriveSubsystem drive;
+  private final IntakeSubSystem intaker;
+  private final IndexerSubsystem indexer;
+  private final VisionSubsystem vision;
+
+  public AutoCommandFactory(ShooterSubsystem shooter, DriveSubsystem drive, IntakeSubSystem intaker,
+  IndexerSubsystem indexer, VisionSubsystem vision) {
+    this.shooter = shooter;
+    this.drive = drive;
+    this.intaker = intaker;
+    this.indexer = indexer;
+    this.vision = vision;
+  }
+
+  public SequentialCommandGroup fiveBallAuto() {
 
     return new SequentialCommandGroup(
         new ParallelDeadlineGroup(
-            autoPath("FiveBall1", drive, true),
+            autoPath("FiveBall1", true),
             new RunCommand(intaker::intakeBall, intaker)),
         new ShooterTeleop(shooter, indexer, vision, drive),
 
         new ParallelDeadlineGroup(
-            autoPath("FiveBall2", drive, false),
+            autoPath("FiveBall2", false),
             new RunCommand(intaker::intakeBall, intaker)),
 
-        autoPath("FiveBall3", drive, false),
+        autoPath("FiveBall3", false),
         new ShooterTeleop(shooter, indexer, vision, drive),
 
         new ParallelDeadlineGroup(
-            autoPath("FiveBall4", drive, false),
+            autoPath("FiveBall4", false),
             new RunCommand(intaker::intakeBall, intaker)),
 
-        autoPath("FiveBall5", drive, false),
+        autoPath("FiveBall5", false),
         new ShooterTeleop(shooter, indexer, vision, drive));
   }
 
-  public Command autoPath(String p, DriveSubsystem drive, boolean initial) {
+  public Command testAuto() {
+    return autoPath("part 1", true);
+  }
+
+  public Command autoPath(String p, boolean initial) {
     PathPlannerTrajectory path = PathPlanner.loadPath(p, Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
     Command cmd = new MecanumPathFollower(path, drive);
     if (initial) {
