@@ -25,12 +25,23 @@ public class AutoCommandFactory {
   private final VisionSubsystem vision;
 
   public AutoCommandFactory(ShooterSubsystem shooter, DriveSubsystem drive, IntakeSubSystem intaker,
-  IndexerSubsystem indexer, VisionSubsystem vision) {
+      IndexerSubsystem indexer, VisionSubsystem vision) {
     this.shooter = shooter;
     this.drive = drive;
     this.intaker = intaker;
     this.indexer = indexer;
     this.vision = vision;
+  }
+
+  public Command autoPath(String p, boolean initial) {
+    PathPlannerTrajectory path = PathPlanner.loadPath(p, Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
+    Command cmd = new MecanumPathFollower(path, drive);
+    if (initial) {
+      cmd = cmd.beforeStarting(() -> drive.resetOdometry(new Pose2d(
+          path.getInitialPose().getTranslation(),
+          ((PathPlannerState) path.sample(0)).holonomicRotation)));
+    }
+    return cmd;
   }
 
   public SequentialCommandGroup fiveBallAuto() {
@@ -56,18 +67,21 @@ public class AutoCommandFactory {
         new ShooterTeleop(shooter, indexer, vision, drive));
   }
 
+  // Tuning/Debugging New Auto Paths
+
   public Command testAuto() {
     return autoPath("part 1", true);
   }
 
-  public Command autoPath(String p, boolean initial) {
-    PathPlannerTrajectory path = PathPlanner.loadPath(p, Constants.DRIVE_SPEED_AUTO, Constants.DRIVE_ACCELERATION_AUTO);
-    Command cmd = new MecanumPathFollower(path, drive);
-    if (initial) {
-      cmd = cmd.beforeStarting(() -> drive.resetOdometry(new Pose2d(
-          path.getInitialPose().getTranslation(),
-          ((PathPlannerState) path.sample(0)).holonomicRotation)));
-    }
-    return cmd;
+  public Command TuningThetaController180() {
+    return autoPath("TuningThetaControllerTest1(180)", true);
+  }
+
+  public Command TuningThetaController90() {
+    return autoPath("TuningThetaControllerTest2(90)", true);
+  }
+
+  public Command TuningXYControllerTest1() {
+    return autoPath("TuningXYControllerTest1", true);
   }
 }
